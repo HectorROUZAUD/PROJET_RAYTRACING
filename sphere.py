@@ -8,8 +8,6 @@ class Sphere:
             self.rayon = rayon
             self.centre = centre
 
-
-
     def renvoie_centre(self):
       res = []
       res.append(self.centre[0])
@@ -17,8 +15,6 @@ class Sphere:
       res.append(self.centre[2])
 
       return res
-
-
 
     def intersection(self, rayon_vue, origine, distance_focale):
       """
@@ -39,7 +35,7 @@ class Sphere:
       """
 
       a = np.dot(rayon_vue, rayon_vue) #qui doit etre égal à 1 si normalisé
-      b = 2 * np.dot(np.array(rayon_vue), np.array(origine) - np.array(self.centre)) #np.array(origine) - np.array(self.centre)
+      b = 2 * np.dot(np.array(origine) - np.array(self.centre), np.array(rayon_vue)) #np.array(origine) - np.array(self.centre)
       c = np.dot(np.array(origine) - np.array(self.centre), np.array(origine) - np.array(self.centre)) - self.rayon * self.rayon   #np.array(origine) - np.array(self.centre)  - self.rayon * self.rayon
 
 
