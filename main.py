@@ -6,8 +6,8 @@ import math
 #import scene
 import camera
 import sphere
-WIDTH= 100
-HEIGHT = 100
+WIDTH= 500
+HEIGHT = 500
 
 
 if __name__ == "__main__":
@@ -15,15 +15,15 @@ if __name__ == "__main__":
     draw = ImageDraw.Draw(image)
 
     #PARTIE: SPHÈRE
-    x_centre = 50
-    y_centre = 50
+    x_centre = 250
+    y_centre = 250
     z_centre = 0
     rayon = 50
     
     objet = sphere.Sphere(rayon, [x_centre, y_centre, z_centre], draw)
 
     #PARTIE: CAMÉRA
-    posi_cam = [50, 50, 50]
+    posi_cam = [250, 250, 250]
     dir_cam =  [0, 0, -1] #regarde la viewport 
     or_cam = [0, 0, -1] 
     dim_cam = [10, 10] #la caméra à une window de taille 100x100 pixel
@@ -42,7 +42,7 @@ if __name__ == "__main__":
             C'est comme pour les premier TP on avait une viewport et une window à définir
             """
             rayon_vue = camera_.rayon_vue([x, y, 0])
-            if objet.ray_sphere_intersection([1, 1, 0], rayon_vue) != 0:
+            if objet.find_intersection(rayon_vue, [1, 1, 0]) != 0:
                 objet.dessiner_sphere(x, y)
 
 

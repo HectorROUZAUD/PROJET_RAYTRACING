@@ -120,40 +120,23 @@ class Sphere:
       Q = np.array(pixel_eval)
       r = self.rayon
 
-      a = rayon_vue * rayon_vue
-      b = -2 * rayon_vue * C - Q
-      c = (C - Q) * (C - Q) - (r*r)
+      a = np.dot(rayon_vue, rayon_vue)
+      b = 2 * np.dot(rayon_vue,  (Q - C))
+      c = np.dot((Q - C), (Q - C)) - (r*r)
 
-      delta = np.dot(b, b)  - 4 * np.dot(a, c)
-
+      delta = b*b  - 4 * a * c
       print(a, b, c, delta)
+
+      if delta == 0:
+         return 0
+      
+      elif delta < 0:
+        t = -b / (2 * a)
+        return t, t
+      
+      elif delta > 0:
+        t1 = -b + math.sqrt(delta) / (2 * a)
+        t2 = -b - math.sqrt(delta) / (2 * a)
+        return t1, t2
     
-    def ray_sphere_intersection(self, Q, d):
-        """
-        Calcule l'intersection entre un rayon et la sphère.
-        Renvoie les valeurs de t pour lesquelles le rayon intersecte la sphère.
-        """
-        # Calcul des composantes du vecteur entre le centre de la sphère et le point Q
-        dx = Q[0] - self.x_centre
-        dy = Q[1] - self.y_centre
-        dz = Q[2] - self.z_centre
-
-        # Calcul des coefficients pour l'équation quadratique
-        a = d[0]**2 + d[1]**2 + d[2]**2
-        b = 2 * (dx * d[0] + dy * d[1] + dz * d[2])
-        c = dx**2 + dy**2 + dz**2 - self.rayon**2
-
-        # Calcul du discriminant
-        discriminant = b**2 - 4*a*c
-
-        print(a, b, c, discriminant)
-
-        if discriminant == 0:
-            return 0  # Pas de solution réelle
-        elif discriminant < 0:
-            t = -b / (2*a)
-            return t, t  # Une solution réelle
-        else:
-            t1 = (-b + math.sqrt(discriminant)) / (2*a)
-            t2 = (-b - math.sqrt(discriminant)) / (2*a)
-            return t1, t2  # Deux solutions réelles
+    
