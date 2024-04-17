@@ -1,22 +1,29 @@
 from PIL import Image, ImageDraw
+from PIL import Image 
 import numpy as np
 import math
 
 
 class Sphere:
-    def __init__(self, rayon, centre):
-            self.rayon = rayon
-            self.centre = centre
+    def __init__(self, rayon, centre, draw):
+      """
+      Une sphère est definie par:
+        un <rayon> (entier)
+        un <centre> (x, y, z)
+      
+      Passage en paramètre de la classe de <draw> pour 
+      pouvoir dessiner dans la bonne image de PIL
+      """
+      self.rayon = rayon
 
-    def renvoie_centre(self):
-      res = []
-      res.append(self.centre[0])
-      res.append(self.centre[1])
-      res.append(self.centre[2])
+      self.x_centre = centre[0]
+      self.y_centre = centre[1]
+      self.z_centre = centre[2]
+      
+      self.draw = draw
 
-      return res
 
-    def intersection(self, rayon_vue, origine, distance_focale):
+    def intersection(self, rayon_vue, origine, distance_focale=5):
       """
       a = t**2 * u
       b = t * 2 * OC * u
@@ -34,64 +41,44 @@ class Sphere:
           
       """
 
-      a = np.dot(rayon_vue, rayon_vue) #qui doit etre égal à 1 si normalisé
+      a = 1  #np.dot(rayon_vue, rayon_vue) #qui doit etre égal à 1 si normalisé
       b = 2 * np.dot(np.array(origine) - np.array(self.centre), np.array(rayon_vue)) #np.array(origine) - np.array(self.centre)
       c = np.dot(np.array(origine) - np.array(self.centre), np.array(origine) - np.array(self.centre)) - self.rayon * self.rayon   #np.array(origine) - np.array(self.centre)  - self.rayon * self.rayon
 
 
       delta = (b*b) - 4 * a * c
-
+			
       #print(a, b, c, delta)
 
       if delta == 0:
-        return False
-    
-      t1 = (-b + np.sqrt(delta)) / (2 * a)
-      t2 = (-b - np.sqrt(delta)) / (2 * a)
-
-      i1 = origine + t1 * rayon_vue
-      i2 = origine + t2 * rayon_vue
-      
-      if np.linalg.norm(i1 - origine) <= distance_focale or np.linalg.norm(i2 - origine) <= distance_focale:
-         return True
-      
+        return 0
       else:
-        return False
+        t1 = (-b + np.sqrt(delta)) / (2 * a)
+        t2 = (-b - np.sqrt(delta)) / (2 * a)
 
-    def intersection2(self, camera_position, rayon_vue, distance_focale):
-            """
-            CELUI DE CHATGPT
-            a = t**2 * u
-            b = t * 2 * OC * u
-            c = OC**2 - r**2
+        i1 = origine + t1 * rayon_vue
+        i2 = origine + t2 * rayon_vue
 
-            Delta = b**2 - 4 * a * c
-            Si Delta == 0:
-                PAS D'INTERSECTION
-            Si Delta < 0:
-                REGARDE LA TEANGEANTE ET LA SOLUTION EST: -b / 2 *a
+        if np.linalg.norm(i1 - origine) <= distance_focale or np.linalg.norm(i2 - origine) <= distance_focale:
+          return i1, i2
+        
+        else:
+          return 0
 
-            Si Delta > 0:
-                t1 = -b - sqrt(Delta) / 2 * a
-                t2 = -b + sqrt(Delta) / 2 * a
-            """
+    def dessiner_sphere(self, x, y):
+      """
+      Ici pour le moment on veut savoir si notre point en (x, y)
+      se trouve dans le cercle ou pas
 
-            a = np.dot(rayon_vue, rayon_vue)  # qui doit être égal à 1 si normalisé
-            b = 2 * np.dot(rayon_vue, camera_position - self.centre)
-            c = np.dot(camera_position - self.centre, camera_position - self.centre) - self.rayon * self.rayon
+      Donc on cherche à savoir si la distance entre le point
+      (x, y) et le centre du cercle est INF au rayon.
+      
+      Pour ça on calcul la norme soit:
+              sqrt [(x - x_centre)**2 + (y - y_centre)**2] <= rayon
+      """
+      a = (x - self.x_centre) * (x - self.x_centre)
+      b = (y - self.y_centre) * (y - self.y_centre)
+      pixel= math.sqrt(a+b)
 
-            delta = (b * b) - 4 * a * c
-
-            if delta == 0:
-                return False
-
-            t1 = (-b + np.sqrt(delta)) / (2 * a)
-            t2 = (-b - np.sqrt(delta)) / (2 * a)
-
-            i1 = camera_position + t1 * rayon_vue
-            i2 = camera_position + t2 * rayon_vue
-
-            if np.linalg.norm(i1 - camera_position) <= distance_focale or np.linalg.norm(i2 - camera_position) <= distance_focale:
-                return True
-            else:
-                return False
+      if pixel<= self.rayon:
+          self.draw.point((x, y), fill="red")
