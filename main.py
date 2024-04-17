@@ -14,12 +14,22 @@ if __name__ == "__main__":
     image = Image.new("RGB", (WIDTH, HEIGHT), "white")
     draw = ImageDraw.Draw(image)
 
-    #draw.point((50, 50), fill="red")
+    #PARTIE: SPHÈRE
     x_centre = 250
     y_centre = 250
     z_centre = 0
     rayon = 50
+    
     objet = sphere.Sphere(rayon, [x_centre, y_centre, z_centre], draw)
+
+    #PARTIE: CAMÉRA
+    posi_cam = [250, 250, 250]
+    dir_cam =  [0, 0, -1] #regarde la viewport 
+    or_cam = [0, 0, -1] 
+    dim_cam = [100, 100] #la caméra à une window de taille 100x100 pixel
+    df_cam = 0.5
+
+    camera_ = camera.Camera(posi_cam, dir_cam, or_cam, dim_cam, df_cam)
 
     for y in range(HEIGHT):
         for x in range(WIDTH):
@@ -31,6 +41,7 @@ if __name__ == "__main__":
 
             C'est comme pour les premier TP on avait une viewport et une window à définir
             """
+
 
             objet.dessiner_sphere(x, y)
 

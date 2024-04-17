@@ -1,6 +1,9 @@
 from PIL import Image, ImageDraw
 import numpy as np
 
+import rayon 
+
+
 class Camera:
     def __init__(self, position=[50, 50, 50], direction=[0, 0, 50], orientation=[0, 0, 1], dimensions=[100, 100], distance_focale=1.0):
         self.dimensions = dimensions
@@ -9,17 +12,16 @@ class Camera:
         self.orientation = orientation
         self.distance_focale = distance_focale
 
-    def rayon(self, vecteur_unitaire):
+    def rayon_vue(self, objet):
         """
         Retourne le rayon de vue
-        V = position + df * vecteur unitaire
-            Si problème de compréhension regarder le TD "Raytracing"
+        V = position + df * objet
+            Si problème de compréhension regarder le TD "Raytracing exo 1"
         """
-
-        vue_x = self.position[0] + self.distance_focale * vecteur_unitaire[0]
-        vue_y = self.position[1] + self.distance_focale * vecteur_unitaire[1]
-        vue_z = self.position[2] + self.distance_focale * vecteur_unitaire[2]
-
+        vue = rayon.Rayon(self.position, objet).rayon_vue(self.distance_focale)
+        vue_x = vue[0]
+        vue_y = vue[1]
+        vue_z = vue[2]
 
         return np.array([vue_x, vue_y, vue_z])
     

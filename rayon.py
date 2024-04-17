@@ -31,6 +31,7 @@ class Rayon:
               +
            (Caméra)
 
+        !!!! ÇA RETOURNE UN VECTEUR (x, y, z)
         """
        
         return self.origine + t * self.direction

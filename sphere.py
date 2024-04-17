@@ -7,12 +7,19 @@ import math
 class Sphere:
     def __init__(self, rayon, centre, draw):
       """
+
+      #==========================================================================================#
       Une sphère est definie par:
         un <rayon> (entier)
-        un <centre> (x, y, z)
-      
+        un <centre> (l, m, n)
+        equation paramétrique: 
+                      (P - C).(P - C) = r² <=> (x - l)² + (y - m)² + (z - n)² = r²
+                      |
+                      --> avec P = (x, y, z) le point du vecteur PC qui est un point du cercle
+      #==========================================================================================#
       Passage en paramètre de la classe de <draw> pour 
       pouvoir dessiner dans la bonne image de PIL
+
       """
       self.rayon = rayon
 
