@@ -12,28 +12,29 @@ class Rayon:
 
     def rayon_vue(self, t):
         """
-           +---------+
-          /         /|
-         /         / |
-        +---------+  |
-        |         |  +
-        |    O    | /
-        |         |/
-        +---------+
-        
+        P(t) = A + t*B
+            A:= Point d'origine 
+            B:= Point sur lequel le rayon est envoyé
 
-           (pixel)  
-         \    |    /
-          \   |   /
-           \  |  /
-            \ | /
-             \|/
-              +
-           (Caméra)
+                        A-----------------------B
+                        t=0       t=1/2       t= 1
+
+        on lance une "droite" (ici un rayon de vue) entre A et B 
+        et en fesant varier t entre [0, 1] on se rapproche soit du point A ou B
+
 
         !!!! ÇA RETOURNE UN VECTEUR (x, y, z)
+
+
+
+
         """
-       
-        return self.origine + t * self.direction
+        x_ray = self.origine[0] + t * self.direction[0]
+        y_ray = self.origine[1] + t * self.direction[1]
+        z_ray = self.origine[2] + t * self.direction[2]
+
+        ray = [x_ray, y_ray, z_ray]
+
+        return ray
 
     
