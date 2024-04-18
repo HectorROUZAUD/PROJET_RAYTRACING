@@ -11,7 +11,7 @@ import couleur
 import sphere
 
 class Scene:
-    def __init__(self, camera, image, objets = None, lumieres = 0, lumiere_ambiante = 0):
+    def __init__(self, camera, image, objets, lumieres = 0, lumiere_ambiante = 0):
         self.camera = camera
         self.objets = objets
         self.lumieres = lumieres
@@ -22,12 +22,6 @@ class Scene:
 
     def ajouter_camera(self, camera):
         self.camera=camera
-
-
-
-
-    def ajouter_scene(self):
-        pass
 
 
     def ajouter_objets(self):

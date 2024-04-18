@@ -29,49 +29,6 @@ class Sphere:
       
       self.draw = draw
 
-
-    def intersection(self, rayon_vue, origine, distance_focale=5):
-      """
-      a = t**2 * u
-      b = t * 2 * OC * u
-      c = OC**2 - r**2
-
-      Delta = b**2 - 4 * a * c
-        Si Delta == 0:
-          PAS D'INTERSECTION
-        Si Delta < 0:
-          REGARDE LA TEANGEANTE ET LA SOLUTION EST: -b / 2 *a
-        
-        Si Delta > 0:
-          t1 = -b - sqrt(Delta) / 2 * a
-          t2 = -b + sqrt(Delta) / 2 * a
-          
-      """
-
-      a = 1  #np.dot(rayon_vue, rayon_vue) #qui doit etre égal à 1 si normalisé
-      b = 2 * np.dot(np.array(origine) - np.array(self.centre), np.array(rayon_vue)) #np.array(origine) - np.array(self.centre)
-      c = np.dot(np.array(origine) - np.array(self.centre), np.array(origine) - np.array(self.centre)) - self.rayon * self.rayon   #np.array(origine) - np.array(self.centre)  - self.rayon * self.rayon
-
-
-      delta = (b*b) - 4 * a * c
-			
-      #print(a, b, c, delta)
-
-      if delta == 0:
-        return 0
-      else:
-        t1 = (-b + np.sqrt(delta)) / (2 * a)
-        t2 = (-b - np.sqrt(delta)) / (2 * a)
-
-        i1 = origine + t1 * rayon_vue
-        i2 = origine + t2 * rayon_vue
-
-        if np.linalg.norm(i1 - origine) <= distance_focale or np.linalg.norm(i2 - origine) <= distance_focale:
-          return i1, i2
-        
-        else:
-          return 0
-
     def dessiner_sphere(self, x, y):
       """
       Ici pour le moment on veut savoir si notre point en (x, y)
@@ -125,7 +82,7 @@ class Sphere:
       c = np.dot((Q - C), (Q - C)) - (r*r)
 
       delta = b*b  - 4 * a * c
-      print(a, b, c, delta)
+      #print(a, b, c, delta)
 
       if delta == 0:
          return 0
