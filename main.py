@@ -6,8 +6,8 @@ import math
 #import scene
 import camera
 import sphere
-WIDTH= 300
-HEIGHT = 300
+WIDTH = 70
+HEIGHT = 70
 
 
 if __name__ == "__main__":
@@ -34,10 +34,10 @@ if __name__ == "__main__":
     draw = ImageDraw.Draw(image)
 
     #PARTIE: SPHÈRE
-    x_centre = 150
-    y_centre = 150
+    x_centre = WIDTH // 2
+    y_centre = HEIGHT // 2
     z_centre = 0
-    rayon = 50
+    rayon = 5
     
     objet = sphere.Sphere(rayon, [x_centre, y_centre, z_centre], draw)
 
@@ -52,8 +52,7 @@ if __name__ == "__main__":
                     dim_cam = [50, 50] #la caméra à une window de taille 100x100 pixel
                     df_cam = 0 #PLUS LA DISTANCE FOCALE EST GRANDE, PLUS L'OUVERTURE DE LA CAM SERA PETITE
 
-                    Avec ses dimentions on voit le demi cercle pourquoi ? 
-                                ----> Voir le shcéma du dessous
+    La distance focale sert juste à dire si on zoom ou si on ne zoom pas la scène
 
 
     VOICI UN SCHÉMA DE COMMENT EST REPRÉSENTÉ LA CAMÉRA 
@@ -75,19 +74,18 @@ if __name__ == "__main__":
                     |           |
                     ------|------
     """
-    posi_cam = [150, 150, 150]
+    posi_cam = [WIDTH // 2, HEIGHT // 2, WIDTH // 2]
     dir_cam =  [0, 0, -1] #regarde la viewport 
     or_cam = [0, 0, -1] 
-    dim_cam = [100, 100] #la caméra à une window de taille 100x100 pixel
-    df_cam = 0
+    dim_cam = [8, 8] #la caméra à une window de taille 100x100 pixel
+    df_cam = 50
 
 
     camera_ = camera.Camera(posi_cam, dir_cam, or_cam, dim_cam, df_cam)
 
-    window = camera_.window()
-    print(df_cam, window)
-    
+
     for y in range(HEIGHT):
+        print(y)
         for x in range(WIDTH):
             """
             Il faut vérifier que pour chaque objet qui se trouve dans la 
@@ -97,12 +95,10 @@ if __name__ == "__main__":
 
             C'est comme pour les premier TP on avait une viewport et une window à définir
             """
-            x_ray, y_ray, z_ray = camera_.rayon_vue([x, y, 0]) #récupère le rayon de vue de la caméra à pixel courant
-        
-            if camera_.in_window(x, y, window):
-                #S'il y a intersection alors j'allume le pixel
-                if objet.find_intersection([x_ray, y_ray, z_ray], [1, 1, 0]) != 0:
-                    objet.dessiner_sphere(x, y)
+            print("\t", x)
+            pixel_courant_dessin = [x, y, 0]
+            camera_.rayon_vue(pixel_courant_dessin, objet)
+            
 
 
     image.show("sphere.png")

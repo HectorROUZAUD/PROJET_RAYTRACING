@@ -24,12 +24,29 @@ class Camera:
         SINON 
             ON NE DESSINE RIEN
         """
-        vue = rayon.Rayon(self.position, objet).rayon_vue(self.distance_focale)
-        vue_x = vue[0]
-        vue_y = vue[1]
-        vue_z = vue[2]
-        
-        return np.array([vue_x, vue_y, vue_z])
-        
+        return  rayon.Rayon(self.position, objet).rayon_vue(self.distance_focale)
+    
+    def window(self):
+        """
+        C'est pour connaitre la taille de vue de notre caméra 
+        en appliquant un ratio entre:
 
-
+            les dimensions de la caméra et sa distance focale 
+        SI dimensions = 100x100 et df = 0.01 => 1/100 ALORS:
+            dimensions = dimensions - (dimensions * df)
+        """
+        return np.array(self.dimensions) - (np.array(self.dimensions) * self.distance_focale)
+ 
+    def in_window(self, x, y, dimension):
+        """
+        Vérifie si le pixel (x, y) est dans la vue de la caméra 
+        donc sa vue window
+        """
+        a = self.position[0] -  dimension[0] <= x <= self.position[0] +  dimension[0]
+        b = self.position[1] -  dimension[1] <= y <= self.position[1] +  dimension[1]
+        
+        if a and b:
+            return True
+        else:
+            return False
+                

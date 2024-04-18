@@ -29,12 +29,7 @@ class Rayon:
 
 
         """
-        x_ray = self.origine[0] + t * self.direction[0]
-        y_ray = self.origine[1] + t * self.direction[1]
-        z_ray = self.origine[2] + t * self.direction[2]
-
-        ray = [x_ray, y_ray, z_ray]
-
-        return ray
+        return  np.array(self.origine) + t * np.array(self.direction)
+        
 
     

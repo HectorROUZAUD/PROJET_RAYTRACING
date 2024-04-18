@@ -12,7 +12,7 @@ class Camera:
         self.orientation = orientation
         self.distance_focale = distance_focale
 
-    def rayon_vue(self, objet):
+    def rayon_vue(self, pixel_courant_dessin, objet):
         """
         Retourne le rayon de vue si il est compris dans les dimensions de la caméra
         V = position + df * objet
@@ -23,20 +23,25 @@ class Camera:
             ALORS ON PEUT FAIRE LE RESTE ET DESSINER LA PARTIE QU'ON VOIT 
         SINON 
             ON NE DESSINE RIEN
-        """
-        return  rayon.Rayon(self.position, objet).rayon_vue(self.distance_focale)
-    
-    def window(self):
-        """
-        C'est pour connaitre la taille de vue de notre caméra 
-        en appliquant un ratio entre:
 
-            les dimensions de la caméra et sa distance focale 
-        SI dimensions = 100x100 et df = 0.01 => 1/100 ALORS:
-            dimensions = dimensions - (dimensions * df)
+
+        Il faut d'abord connaitre la position du pixel de la caméra dans le plan 3D et on part de ce pixel pour le lancer sur 
+        l'écran de dessin 
         """
-        return np.array(self.dimensions) - (np.array(self.dimensions) * self.distance_focale)
- 
+        x = pixel_courant_dessin[0]
+        y = pixel_courant_dessin[1]
+
+        for x_cam in range(self.position[0]):
+            for y_cam in range(self.position[1]):
+                new_posi = rayon.Rayon(self.position, [x_cam, y_cam, self.position[2]]).rayon_vue(self.distance_focale)
+                ray = rayon.Rayon(new_posi, pixel_courant_dessin).rayon_vue(self.distance_focale)
+        
+
+                #S'il y a intersection alors j'allume le pixel
+                if objet.find_intersection([ray[0], ray[1], ray[2]], [1, 1, 0]) != 0:
+                    objet.dessiner_sphere(x, y)
+
+
     def in_window(self, x, y, dimension):
         """
         Vérifie si le pixel (x, y) est dans la vue de la caméra 
