@@ -29,24 +29,6 @@ class Sphere:
       
       self.draw = draw
 
-    def dessiner_sphere(self, x, y):
-      """
-      Ici pour le moment on veut savoir si notre point en (x, y)
-      se trouve dans le cercle ou pas
-
-      Donc on cherche à savoir si la distance entre le point
-      (x, y) et le centre du cercle est INF au rayon.
-      
-      Pour ça on calcul la norme soit:
-              sqrt [(x - x_centre)**2 + (y - y_centre)**2] <= rayon
-      """
-      a = (x - self.x_centre) * (x - self.x_centre)
-      b = (y - self.y_centre) * (y - self.y_centre)
-      pixel= math.sqrt(a+b)
-
-      if pixel<= self.rayon:
-          self.draw.point((x, y), fill="red")
-
     def find_intersection(self, rayon_vue, pixel_eval):
       """
       t²*B*B - 2*t*B * (C - Q) + (C - Q) * (C - Q) - r² = 0
@@ -84,16 +66,21 @@ class Sphere:
       delta = b*b  - 4 * a * c
       #print(a, b, c, delta)
 
-      if delta == 0:
-         return 0
+      if delta < 0:
+         return None
       
-      elif delta < 0:
-        t = -b / (2 * a)
-        return t, t
-      
-      elif delta > 0:
-        t1 = -b + math.sqrt(delta) / (2 * a)
-        t2 = -b - math.sqrt(delta) / (2 * a)
-        return t1, t2
+      else:
+        t1 = (-b + math.sqrt(delta)) / (2 * a)
+        t2 = (-b - math.sqrt(delta)) / (2 * a)
+
+        # Retourne le point d'intersection le plus proche devant le rayon
+        if t1 >= 0 and t2 >= 0:
+            return pixel_eval + min(t1, t2) * rayon_vue
+        elif t1 >= 0:
+            return pixel_eval + t1 * rayon_vue
+        elif t2 >= 0:
+            return pixel_eval + t2 * rayon_vue
+        else:
+            return None
     
     

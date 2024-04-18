@@ -6,8 +6,8 @@ import math
 #import scene
 import camera
 import sphere
-WIDTH = 70
-HEIGHT = 70
+WIDTH = 200
+HEIGHT = 200
 
 
 if __name__ == "__main__":
@@ -34,10 +34,10 @@ if __name__ == "__main__":
     draw = ImageDraw.Draw(image)
 
     #PARTIE: SPHÈRE
-    x_centre = WIDTH // 2
-    y_centre = HEIGHT // 2
+    x_centre = 100
+    y_centre = 100
     z_centre = 0
-    rayon = 5
+    rayon = 50
     
     objet = sphere.Sphere(rayon, [x_centre, y_centre, z_centre], draw)
 
@@ -74,30 +74,29 @@ if __name__ == "__main__":
                     |           |
                     ------|------
     """
-    posi_cam = [WIDTH // 2, HEIGHT // 2, WIDTH // 2]
-    dir_cam =  [0, 0, -1] #regarde la viewport 
+    posi_cam = np.array([100, 100, 100])
+    dir_cam =  np.array([0, 0, -1]) #regarde la viewport 
     or_cam = [0, 0, -1] 
-    dim_cam = [8, 8] #la caméra à une window de taille 100x100 pixel
-    df_cam = 50
+    dim_cam = [WIDTH, HEIGHT] #la caméra à une window de taille 100x100 pixel
+    df_cam = 20
 
 
     camera_ = camera.Camera(posi_cam, dir_cam, or_cam, dim_cam, df_cam)
 
 
+    #Parcours de l'écran de la caméra
     for y in range(HEIGHT):
-        print(y)
         for x in range(WIDTH):
-            """
-            Il faut vérifier que pour chaque objet qui se trouve dans la 
-            viewport, on la voit bien dans la window de notre caméra
-
-            C'est pour ça qu'on a definie une taille de caméra
-
-            C'est comme pour les premier TP on avait une viewport et une window à définir
-            """
-            print("\t", x)
-            pixel_courant_dessin = [x, y, 0]
-            camera_.rayon_vue(pixel_courant_dessin, objet)
+            #il faut générer un rayon r(origine, direction)
+            posi_x = x - WIDTH/2 + posi_cam[0]
+            posi_y = y - HEIGHT/2 + posi_cam[1]
+            posi_z = posi_cam[2] - df_cam
+            pixel = np.array([posi_x, posi_y, posi_z])
+            
+            rayon = camera_.rayon_vue(pixel)
+            #est-ce qu'il y a une intersection ? entre le rayon  et notre sphère
+            if objet.find_intersection(rayon, pixel) is not None:
+                draw.point((x, y), fill="red")
             
 
 
