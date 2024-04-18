@@ -51,11 +51,34 @@ if __name__ == "__main__":
                     or_cam = [0, 0, -1] 
                     dim_cam = [50, 50] #la caméra à une window de taille 100x100 pixel
                     df_cam = 0 #PLUS LA DISTANCE FOCALE EST GRANDE, PLUS L'OUVERTURE DE LA CAM SERA PETITE
+
+                    Avec ses dimentions on voit le demi cercle pourquoi ? 
+                                ----> Voir le shcéma du dessous
+
+
+    VOICI UN SCHÉMA DE COMMENT EST REPRÉSENTÉ LA CAMÉRA 
+        |
+        |
+        -----> x:= centre de la caméra c'est posi_cam
+        Ça nous sert pour dire si le pixel courant est dans le champ de vision 
+        de la caméra ou pas 
+
+
+                    dim_cam[0] / 2                  
+                    ------|------
+                    |           |
+                    |           |
+                    |           |
+   dim_cam[1] / 2  ---    x     |
+                    |           |
+                    |           |
+                    |           |
+                    ------|------
     """
-    posi_cam = [100, 100, 150]
+    posi_cam = [150, 150, 150]
     dir_cam =  [0, 0, -1] #regarde la viewport 
     or_cam = [0, 0, -1] 
-    dim_cam = [25, 100] #la caméra à une window de taille 100x100 pixel
+    dim_cam = [100, 100] #la caméra à une window de taille 100x100 pixel
     df_cam = 0
 
 

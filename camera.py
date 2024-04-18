@@ -25,7 +25,6 @@ class Camera:
             ON NE DESSINE RIEN
         """
         return  rayon.Rayon(self.position, objet).rayon_vue(self.distance_focale)
-
     
     def window(self):
         """
@@ -38,7 +37,6 @@ class Camera:
         """
         return np.array(self.dimensions) - (np.array(self.dimensions) * self.distance_focale)
  
-
     def in_window(self, x, y, dimension):
         """
         Vérifie si le pixel (x, y) est dans la vue de la caméra 
