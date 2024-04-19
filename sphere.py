@@ -31,7 +31,8 @@ class Sphere:
 
     def find_intersection(self, rayon_vue, pixel_eval):
       """
-      t²*B*B - 2*t*B * (C - Q) + (C - Q) * (C - Q) - r² = 0
+      
+      P -  <=> t²*B*B - 2*t*B * (C - Q) + (C - Q) * (C - Q) - r² = 0
       Il faut résoudre cette équation qui est de la forme:
             ax² + bx + c = 0
       Donc on doit trouver t qui est notre point d'intersection
