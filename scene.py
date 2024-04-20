@@ -40,5 +40,3 @@ class Scene:
 
     def trouve_intersection(self, rayon):
         pass
-
-

@@ -1,11 +1,13 @@
 from PIL import Image, ImageDraw
 import numpy as np
 
+"""
 class Objet:
     Voici une implémentation de base de la classe Objet en Python, selon les attributs et méthodes que tu as décrits. Cette classe servira de classe de base pour d'autres objets comme les sphères ou les plans, avec des méthodes virtuelles pour l'intersection et la normale à un point donné.
 
 python
 
+"""
 class Objet:
     def __init__(self, position, couleur, facteur_diffus, facteur_speculaire, facteur_reflection, ombre):
         self.position = position  # Vecteur représentant la position

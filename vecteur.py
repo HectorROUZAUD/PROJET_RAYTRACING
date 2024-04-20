@@ -1,37 +1,41 @@
-from PIL import Image, ImageDraw
 import numpy as np
+from PIL import Image, ImageDraw
 
 class Vecteur:
-    #Constructeur
-    def __init__(self, origine, extremite):
-        #Création des deux points de début et de fin du vecteur avec np.array qui initialise nos points
-        self.origine = np.array(origine)
-        self.extremite = np.array(extremite)
-    #Methode
-    def addition(self, vecteur2):
-        #Utilisation de la + directement car np
-        return Vecteur(self.origine, self.extremite + vecteur2.extremite)
+    def __init__(self, x, y, z):
+        self.vecteur = np.array([x, y, z])
 
+    def addition(self, autre):
+        return Vecteur(*(self.vecteur + autre.vecteur))
 
-    def soustraction(self, vecteur2):
-        #Utilisation de la - directement car np
-        return Vecteur(self.origine, self.extremite - vecteur2.extremite)
-
+    def soustraction(self, autre):
+        return Vecteur(*(self.vecteur - autre.vecteur))
 
     def multiplication_scalaire(self, scalaire):
-        #Utilisation de la * directement car np
-        return Vecteur(self.origine, self.extremite * scalaire)
+        return Vecteur(*(self.vecteur * scalaire))
 
+    def produit_scalaire(self, autre):
+        return np.dot(self.vecteur, autre.vecteur)
 
-    def produit_scalaire(self, vecteur2):
-        #fait le produit scalaire avec dot qui fait le scalaire directement car np
-        return np.dot(self.extremite - self.origine, vecteur2.extremite - vecteur2.origine)
+    def produit_vectoriel(self, autre):
+        return Vecteur(*np.cross(self.vecteur, autre.vecteur))
 
+    def normalisation(self):
+        norme = np.linalg.norm(self.vecteur)
+        return Vecteur(*(self.vecteur / norme if norme != 0 else self.vecteur))
 
-    def produit_vectoriel(self, vecteur2):
-        #Utilisation de np.cross pour pouvoir faire le produit vectoriel
-        return np.cross(self.extremite - self.origine, vecteur2.extremite - vecteur2.origine)
+    def norme(self):
+        return np.linalg.norm(self.vecteur)
 
+    def reflect(self, normal):
+        n = normal.vecteur
+        return Vecteur(*self.vecteur - 2 * self.produit_scalaire(normal) * n)
+
+    def dessiner(self, image, couleur=(0, 0, 0), epaisseur=1):
+        draw = ImageDraw.Draw(image)
+        origine = (self.vecteur[0], self.vecteur[1])
+        extremite = (self.vecteur[0] + self.vecteur[2], self.vecteur[1] + self.vecteur[2])
+        draw.line(origine + extremite, fill=couleur, width=epaisseur)
 
     def normalisation(self):
         #Utilisation de np.linalg.norm qui nous calcule la norme directement
@@ -44,29 +48,12 @@ class Vecteur:
         return np.linalg.norm(self.extremite - self.origine)
 
 
-    #Méthode pour pouvoir tester les vecteurs
-    def dessiner(self, image, couleur=(0, 0, 0), epaisseur=1):
-        draw = ImageDraw.Draw(image)
-        draw.line((self.origine[0], self.origine[1], self.extremite[0], self.extremite[1]), fill=couleur, width=epaisseur)
+    def normalize(self):
+        norm = np.linalg.norm(self)
+        if norm == 0: 
+            return self
+        return self / norm
 
 
-"""
-# Exemple d'utilisation
-origine_vecteur1 = (50, 50)
-extremite_vecteur1 = (100, 100)
-vecteur1 = Vecteur(origine_vecteur1, extremite_vecteur1)
-
-origine_vecteur2 = (100, 100)
-extremite_vecteur2 = (200, 150)
-vecteur2 = Vecteur(origine_vecteur2, extremite_vecteur2)
-
-# Création d'une image
-image = Image.new("RGB", (300, 200), "white")
-
-# Dessiner les vecteurs sur l'image
-vecteur1.dessiner(image, couleur=(255, 0, 0), epaisseur=2)
-vecteur2.dessiner(image, couleur=(0, 0, 255), epaisseur=2)
-
-# Afficher l'image
-image.show()
-"""
+    def dot(self, b):
+        return np.dot(self, b)

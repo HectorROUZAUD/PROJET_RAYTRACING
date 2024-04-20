@@ -5,7 +5,7 @@ import math
 
 
 class Sphere:
-    def __init__(self, rayon, centre, draw):
+    def __init__(self, rayon, centre, couleur, draw):
       """
 
       #==========================================================================================#
@@ -22,13 +22,10 @@ class Sphere:
 
       """
       self.rayon = rayon
-
-      self.x_centre = centre[0]
-      self.y_centre = centre[1]
-      self.z_centre = centre[2]
-      
+      self.centre = centre
+      self.couleur = couleur
       self.draw = draw
-
+      
     def find_intersection(self, rayon_vue, pixel_eval):
       """
       
@@ -56,7 +53,7 @@ class Sphere:
                       t1 = b² + sqrt(DELTA) / 2*a
                       t2 = b² - sqrt(DELTA) / 2*a             
       """
-      C = np.array([self.x_centre, self.y_centre, self.z_centre])  
+      C = self.centre 
       Q = np.array(pixel_eval)
       r = self.rayon
 
@@ -83,5 +80,17 @@ class Sphere:
             return pixel_eval + t2 * rayon_vue
         else:
             return None
+        
+
+    def draw_sphere(self, intersections):
+        for (x, y), _ in intersections.items():
+            self.draw.point((x, y), fill=self.couleur)
+    
+    def get_color(self):
+       # Retourne la couleur de la sphère
+       return self.color
+    
+    def get_normal(self, hit_point):
+        return (hit_point - self.center).normalisation()
     
     
