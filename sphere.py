@@ -80,7 +80,6 @@ class Sphere:
             return pixel_eval + t2 * rayon_vue
         else:
             return None
-        
 
     def draw_sphere(self, intersections):
         for (x, y), _ in intersections.items():
@@ -91,6 +90,6 @@ class Sphere:
        return self.color
     
     def get_normal(self, hit_point):
-        return (hit_point - self.center).normalisation()
+        return np.linalg.norm(hit_point - self.centre)
     
     

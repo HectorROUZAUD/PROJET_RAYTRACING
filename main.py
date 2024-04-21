@@ -6,7 +6,10 @@ import math
 #import scene
 from camera import Camera
 from sphere import Sphere
-WIDTH = 1000
+import lumiere
+
+
+WIDTH = 500
 HEIGHT = 500
 
 
@@ -37,19 +40,19 @@ if __name__ == "__main__":
     x_centre = 100
     y_centre = 100
     z_centre = 0
-    couleur = "red"
+    couleur = [255, 0, 0]
     rayon = 100
 
     x_centre1 = 300
     y_centre1 = 100
     z_centre1 = 0
-    couleur1 = "green"
+    couleur1 = [0, 255, 0]
     rayon1 = 100
     
     x_centre2 = -100
     y_centre2 = 100
     z_centre2 = 0
-    couleur2 = "blue"
+    couleur2 = [0, 0, 255]
     rayon2 = 100
 
     sphere = Sphere(rayon, [x_centre, y_centre, z_centre], couleur, draw)
@@ -101,6 +104,9 @@ if __name__ == "__main__":
 
     camera_ = Camera(posi_cam, dir_cam, or_cam, dim_cam, df_cam)
 
+    #PARTIE: LUMIÈRE
+    posi_lumi = [490, 490, 100]
+    lumiere_ = lumiere.Lumiere(posi_lumi, [1, 1, 1])
 
     # À l'intérieur de la boucle principale dans main.py
     for y in range(HEIGHT):
@@ -116,14 +122,41 @@ if __name__ == "__main__":
             for sphere in objets:
                 point = sphere.find_intersection(rayon, pixel)
                 if point is not None:
+                    
+                
+                    #il faut en premier trouver la normale au point d'intersection
+                    normale = np.array(sphere.get_normal(point))
+                    #envoyer la lumière sur ce point d'intersection
+                    lumi = np.array(lumiere_.direction_from(normale))
+
+                    #à ce point on calcule la lumière 
+                    Ia = np.array([0.7, 0.7, 0.7])
+                    ka = 0.2
+                    kd = 0.7
+                    ks = 0.1
+                    r_reflechi = np.array(2 * (np.dot(-lumi, normale) * normale + lumi))
+                    V = np.array(rayon)
+                    I = Ia * ka + kd * (np.dot(lumi, normale)) + ks * (np.dot(r_reflechi, rayon))
+                    I_length = np.linalg.norm(I)
+                    if I_length != 0:
+                        I /= I_length
+
+                    
+                    couleur = np.array(sphere.couleur) * I
+                    couleur = couleur.astype(int)  # Convertir en entiers
+                    draw.point((x, y), fill=tuple(couleur))
+
+
+
+                    """ 
                     distance = np.linalg.norm(point - camera_.position)
                     if distance < closest_distance:
                         closest_distance = distance
                         closest_sphere = sphere
 
-            # Dessinez le point seulement si la sphère la plus proche a été trouvée
-            if closest_sphere is not None:
-                draw.point((x, y), fill=closest_sphere.couleur)
-        
+                    # Dessinez le point seulement si la sphère la plus proche a été trouvée
+                    if closest_sphere is not None:
+                    """
+                
 
     image.show()  # Vous pouvez aussi sauvegarder l'image si nécessaire avec image.save("output.png")
