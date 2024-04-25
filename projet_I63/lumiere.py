@@ -7,4 +7,4 @@ class Lumiere:
         self.couleur = couleur
 
     def direction_from(self, point):
-        return (self.position - point)/np.linalg.norm((self.position - point))
+        return np.linalg.norm(self.position - point)

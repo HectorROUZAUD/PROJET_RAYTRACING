@@ -92,7 +92,7 @@ if __name__ == "__main__":
                     |           |
                     ------|------
     """
-    posi_cam = np.array([100, 100, 500])
+    posi_cam = np.array([100, 100, 100])
     dir_cam =  np.array([0, 0, -1]) #regarde la viewport 
     or_cam = [0, 0, -1] 
     dim_cam = [WIDTH, HEIGHT] #la caméra à une window de taille 100x100 pixel
@@ -105,15 +105,15 @@ if __name__ == "__main__":
     camera_ = Camera(posi_cam, dir_cam, or_cam, dim_cam, df_cam)
 
     #PARTIE: LUMIÈRE
-    posi_lumi = [100, -1000, 0]
+    posi_lumi = [490, 490, 100]
     lumiere_ = lumiere.Lumiere(posi_lumi, [1, 1, 1])
 
     # À l'intérieur de la boucle principale dans main.py
-
     for y in range(HEIGHT):
         for x in range(WIDTH):
             pixel = np.array([x - WIDTH/2 + posi_cam[0], y - HEIGHT/2 + posi_cam[1], posi_cam[2] - df_cam])
             rayon = camera_.rayon_vue(pixel)
+            
             # Initialisation de la variable pour conserver la sphère la plus proche
             closest_sphere = None
             closest_distance = float('inf')
@@ -121,36 +121,34 @@ if __name__ == "__main__":
             # Recherchez l'intersection la plus proche pour chaque sphère
             for sphere in objets:
                 point = sphere.find_intersection(rayon, pixel)
-                #print("point\n ",point)
                 if point is not None:
+                    
+                
                     #il faut en premier trouver la normale au point d'intersection
                     normale = np.array(sphere.get_normal(point))
-                    #print("normale\n",normale)
-                    #normale = np.linalg.norm(normale)
                     #envoyer la lumière sur ce point d'intersection
-                    lumi = np.array(lumiere_.direction_from(point))
-                    #print("lumi\n",lumi)
+                    lumi = np.array(lumiere_.direction_from(normale))
+
                     #à ce point on calcule la lumière 
                     Ia = np.array([0.7, 0.7, 0.7])
                     ka = 0.2
                     kd = 0.7
                     ks = 0.1
-                    #r_reflechi = np.array(2 * (np.dot(-lumi, normale) * normale + lumi))
-                    #r_reflechi/=np.linalg.norm(r_reflechi)
+                    r_reflechi = np.array(2 * (np.dot(-lumi, normale) * normale + lumi))
                     V = np.array(rayon)
-                    I = Ia * ka + kd * (np.dot(lumi, normale)) #+ ks * (np.dot(r_reflechi, rayon))
-                    I /=  np.linalg.norm(I)
-                    #print("I\n",I)
+                    I = Ia * ka + kd * (np.dot(lumi, normale)) + ks * (np.dot(r_reflechi, rayon))
+                    I_length = np.linalg.norm(I)
+                    if I_length != 0:
+                        I /= I_length
+
                     
                     couleur = np.array(sphere.couleur) * I
-                    #couleur /= np.linalg.norm(couleur)
                     couleur = couleur.astype(int)  # Convertir en entiers
-                    #print("couleur\n",couleur)
                     draw.point((x, y), fill=tuple(couleur))
 
 
 
-                    """
+                    """ 
                     distance = np.linalg.norm(point - camera_.position)
                     if distance < closest_distance:
                         closest_distance = distance
@@ -158,6 +156,7 @@ if __name__ == "__main__":
 
                     # Dessinez le point seulement si la sphère la plus proche a été trouvée
                     if closest_sphere is not None:
-                  """
+                    """
+                
 
-    image.show()
+    image.show()  # Vous pouvez aussi sauvegarder l'image si nécessaire avec image.save("output.png")

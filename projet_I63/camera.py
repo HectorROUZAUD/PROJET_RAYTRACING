@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Camera:
-    def __init__(self, position, direction, orientation, dimensions, distance_focale):
+    def __init__(self, position=[50, 50, 50], direction=[0, 0, 50], orientation=[0, 0, 1], dimensions=[100, 100], distance_focale=1.0):
         self.dimensions = np.array(dimensions)
         self.position = np.array(position)
         self.direction = np.array(direction)
