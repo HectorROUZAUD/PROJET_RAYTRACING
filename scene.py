@@ -31,8 +31,8 @@ class Scene:
 
 
 
-    def ajouter_objets(self):
-        pass
+    def ajouter_objet(self, objet):
+        self.objets.append(objet)
 
     def ajouter_lumieres(self):
         pass

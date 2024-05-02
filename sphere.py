@@ -67,6 +67,9 @@ class Sphere:
       if delta < 0:
          return None
       
+      elif delta == 0:
+         return -b/(2*a)
+      
       else:
         t1 = (-b + math.sqrt(delta)) / (2 * a)
         t2 = (-b - math.sqrt(delta)) / (2 * a)
@@ -85,9 +88,9 @@ class Sphere:
         for (x, y), _ in intersections.items():
             self.draw.point((x, y), fill=self.couleur)
     """
-    def get_color(self):
+    def get_couleur(self):
        # Retourne la couleur de la sphère
-       return self.color
+       return self.couleur
     
     def get_normal(self, hit_point):
         return (hit_point - self.centre)/np.linalg.norm(hit_point - self.centre)
