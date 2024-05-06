@@ -26,7 +26,7 @@ class Sphere:
       self.couleur = couleur
       self.draw = draw
       
-    def find_intersection(self, rayon_vue, pixel_eval):
+    def find_intersection(self,pixel_eval,rayon_vue):
       """
       
       P -  <=> t²*B*B - 2*t*B * (C - Q) + (C - Q) * (C - Q) - r² = 0

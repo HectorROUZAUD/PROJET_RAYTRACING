@@ -9,10 +9,11 @@ class Plan:
         self.couleur = couleur  # Color of the plane
     
     def find_intersection(self, ray_origin, ray_direction):
-        #N = self.normal / np.linalg.norm(self.normal)
+        """https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection, utilisation de wiki pour le calcul du plan"""
+        #self.normal = self.normal / np.linalg.norm(self.normal)
         denominateur = np.dot(self.normal, ray_direction)
         
-        if np.abs(denominateur) > 1e-6:  # Avoid division by zero and ignore parallel rays
+        if denominateur != 0:  # Avoid division by zero and ignore parallel rays
             d = np.dot(self.normal, self.point - ray_origin) / denominateur
             if d >= 0:
                 # Retourne le point d'intersection

@@ -11,8 +11,7 @@ from lumiere import Lumiere
 from scene import Scene
 
 
-WIDTH = 500
-HEIGHT = 500
+
 
 
 if __name__ == "__main__":
@@ -192,8 +191,8 @@ if __name__ == "__main__":
         
         # à ce point on calcule la lumière 
         Ia = np.array([0.7, 0.7, 0.7]) # Intensité lumière ambiante
-        ka = 0.5  # Coefficient ambiant
-        kd = 0.5  # Coefficient de diffusion
+        ka = 0.4  # Coefficient ambiant
+        kd = 0.5    # Coefficient de diffusion
         ks = 0.1  # Coefficient spéculaire
         r_reflechi = np.array(2 * (np.dot(-lumi, normale) * normale + lumi))
         r_reflechi /= np.linalg.norm(r_reflechi)
@@ -205,12 +204,16 @@ if __name__ == "__main__":
         return couleur.astype(int)
 
     def est_dans_ombre(intersection, lumiere_, objets, objet_ignore):
-        direction_lumiere = lumiere_.direction_from(intersection)
+        
+        #print(direction_lumiere)
         distance_lumiere = np.linalg.norm(lumiere_.position - intersection)
-        point_de_depart = intersection + direction_lumiere * 0.001  # Un petit offset pour éviter l'intersection avec l'objet lui-même
+        #print("distance_lumi",distance_lumiere)
+        #Un petit offset pour éviter l'intersection avec l'objet lui-même
 
         for objet in objets:
-            if objet is not objet_ignore:
+            point_de_depart = intersection + objet.get_normal(intersection) * 0.001
+            direction_lumiere = lumiere_.direction_from(point_de_depart)
+            if objet != objet_ignore:
                 intersection_ombre = objet.find_intersection(point_de_depart, direction_lumiere)
                 if intersection_ombre is not None:
                     distance_intersection = np.linalg.norm(intersection_ombre - point_de_depart)
@@ -219,34 +222,36 @@ if __name__ == "__main__":
         return False   # Aucune intersection trouvée, donc le point est éclairé
 
 
-    # Initialisation de la scène avec les sphères et le plan
-    #WIDTH, HEIGHT = 500, 500
-    image = Image.new("RGB", (WIDTH, HEIGHT), "white")
+    #initialisation
+    WIDTH, HEIGHT = 500, 500
+    image = Image.new("RGB", (WIDTH, HEIGHT), "black")
     draw = ImageDraw.Draw(image)
 
     
-    # Création des objets de la scène
+    #création des objets de la scène
     spheres = [
-        Sphere(100, [100, 100, 0], [255, 0, 0], draw),
-        Sphere(100, [300, 100, 0], [0, 255, 0], draw),
-        Sphere(100, [-100, 100, 0], [0, 0, 255], draw),
+        Sphere(1, [0, 3, 0], [255, 0, 0], draw),
+        #Sphere(100, [300, 100, 0], [0, 255, 0], draw),
+        #Sphere(100, [-100, 100, 0], [0, 0, 255], draw),
     ]
-    plan = Plan([0, 0, 0], [0, 1, 0], [255, 255, 0])  # Un plan jaune pour le sol
+    
+    #je créer un plan horizontal, et en jaune
+    plan = Plan([0, 0, 0], [0, 1, 0], [255, 255, 0])  
 
     # Ajouter les objets dans une liste
     objets_scene = spheres + [plan]
 
     # Configuration de la caméra
-    camera_ = Camera(np.array([100, 100, 500]), np.array([0, 0, -1]), [0, 1, 0], [WIDTH, HEIGHT], 150)
+    camera_ = Camera(np.array([0, 3, 5]), np.array([0, 0, -1]), [0, 1, 0], [WIDTH, HEIGHT], 350)
 
     # Configuration de la lumière
-    lumiere_ = Lumiere([0, 500, 0], [1, 1, 1])
+    lumiere_ = Lumiere([2, 5, 5], [1, 1, 1])
 
 
-    # Boucle principale du ray tracing
+
     for y in range(HEIGHT):
         for x in range(WIDTH):
-            # Calcul du rayon sortant de la caméra
+            #calcul du rayon sortant de la caméra
             pixel = np.array([x - WIDTH / 2 + camera_.position[0], HEIGHT / 2 - y + camera_.position[1], camera_.position[2] - camera_.distance_focale])
             rayon = camera_.rayon_vue(pixel)
             rayon /= np.linalg.norm(rayon)
@@ -258,7 +263,7 @@ if __name__ == "__main__":
             
             # Vérifier l'intersection avec tous les objets
             for objet in objets_scene:
-                intersection = objet.find_intersection(rayon, camera_.position)
+                intersection = objet.find_intersection(camera_.position,rayon)
                 if intersection is not None:
                     distance = np.linalg.norm(intersection - camera_.position)
                     if distance < distance_min:
@@ -270,12 +275,13 @@ if __name__ == "__main__":
             
             # Vérifiez si le point est dans l'ombre et calculez la couleur
             if intersection_proche is not None and objet_proche is not None:
+                #print("oui")
                 if est_dans_ombre(intersection_proche, lumiere_, objets_scene, objet_proche):
-                    # Utiliser une couleur plus sombre pour simuler l'ombre
-                    couleur = (couleur_min * 0.1)  # Assombrir la couleur pour l'ombre
+    
+                    couleur = np.array([0,0,0]*0.1)  # Assombrir la couleur pour l'ombre
                 else:
-                    # Calculer la couleur normalement si le point n'est pas dans l'ombre
-                    couleur = couleur_min
+                    
+                    couleur = calculer_couleur(objet_proche, intersection_proche, lumiere_, rayon, camera_)
 
                 # Assurez-vous que la couleur est un tableau d'entiers avant de dessiner
                 couleur = np.clip(couleur, 0, 255)  # S'assurer que la couleur reste dans les limites valides
