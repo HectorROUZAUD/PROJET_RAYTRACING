@@ -5,7 +5,7 @@ import math
 
 
 class Sphere:
-    def __init__(self, rayon, centre, couleur, draw):
+    def __init__(self, rayon, centre, couleur):
       """
 
       #==========================================================================================#
@@ -24,7 +24,7 @@ class Sphere:
       self.rayon = rayon
       self.centre = centre
       self.couleur = couleur
-      self.draw = draw
+      #self.reflection = reflection
       
     def find_intersection(self,pixel_eval,rayon_vue):
       """
