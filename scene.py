@@ -4,6 +4,7 @@ import numpy as np
 
 from camera import Camera
 from sphere import Sphere
+from sphere import ImageTexture
 from plan import Plan
 from lumiere import Lumiere
 
@@ -15,6 +16,7 @@ class Scene:
         self.lumiere = None
         self.largeur = largeur 
         self.hauteur = hauteur
+        self.earth_texture = ImageTexture("earthmap.jpg")
 
     def ajouter_objet(self, objet):
         self.objets.append(objet)
@@ -42,7 +44,8 @@ class Scene:
             for x in range(self.largeur):
                 rayon = self.calculer_rayon(x, y)
                 couleur = self.tracer_rayon(self.camera.position, rayon)
-                draw.point((x, y), fill=tuple(couleur.astype(int)))
+                #draw.point((x, y), fill=tuple(couleur.astype(int)))
+                draw.point((x, y), fill=tuple(int(component) for component in couleur))
 
         image.save("scene.png")
         image.show()
@@ -87,9 +90,21 @@ class Scene:
         #V = np.array(rayon)
         I = Ia * ka + kd * np.dot(lumi, normale) + ks * (np.dot(r_reflechi, rayon) ** 100)
         
-        couleur = np.array(objet.couleur) * I
-        couleur = np.clip(couleur, 0, 255)
-        return couleur.astype(int)
+        # Vérifie si l'objet est une sphère pour appliquer la texture
+        if not isinstance(objet, Plan):
+            # Conversion de la normale en coordonnées sphériques
+            u, v = objet.get_sphere_uv(normale)
+            col = self.earth_texture.value(u, v)
+
+            couleur = np.array(objet.couleur) * I * col
+            couleur = np.clip(couleur, 0, 255)
+        else:
+            #return couleur
+            couleur = np.array(objet.couleur) * I
+            couleur = np.clip(couleur, 0, 255)
+
+        #return couleur.astype(int)
+        return couleur
 
     def est_dans_ombre(self, intersection, objet_ignore):
         direction_lumiere = self.lumiere.direction_from(intersection)
@@ -112,8 +127,8 @@ class Scene:
         # Initialisation de la scène
         scene = Scene(largeur, hauteur)
 
-        sphere1 = Sphere(1, [0, 1, 0], [255, 0, 0])
-        sphere2 = Sphere(0.5, [0, 1, 4], [0, 255, 0])
+        sphere1 = Sphere(1, [0, 1, 0], [255, 255, 255])
+        sphere2 = Sphere(0.5, [0, 1, 4], [255, 255, 255])
         plan = Plan([0, 0, 0], [0, 1, 0], [255, 255, 0])
 
         #Ajout 
