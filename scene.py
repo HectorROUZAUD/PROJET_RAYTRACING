@@ -242,6 +242,9 @@ class Scene:
 
 
     def scene1(self):
+        """
+        Image avec 
+        """
         #dimensions de la scène
         largeur, hauteur = 1080, 600
 
