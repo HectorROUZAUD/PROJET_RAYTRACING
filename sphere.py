@@ -111,7 +111,7 @@ class Sphere:
     def get_uv(self, p):
       """
       Retourne la position du point p sur la texture
-      Pour plus d'explication voir dans:
+      Pour plus d'explication voir dans le fichier:
         image_texture.py dans le init l'explication de ce qu'il se passe ici
       """
 

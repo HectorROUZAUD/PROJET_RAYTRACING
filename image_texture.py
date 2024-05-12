@@ -39,7 +39,8 @@ class ImageTexture:
         Et nous avons nos coordonnées sphérique et la position du pixel sur nôtre image normalisé
             u et v 
         
-        C'EST CE QUE FAIT LA FONCTION get_uv(P) #P:= on point 
+        C'EST CE QUE FAIT LA FONCTION get_uv(P) que l'on appel en premier 
+        et ensuite on appel la fonction valeur(u, v) avec P:= on point 
         """
         self.image = Image.open(filename)
         self.largeur, self.hauteur = self.image.size
