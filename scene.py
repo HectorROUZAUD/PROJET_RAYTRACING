@@ -49,8 +49,9 @@ class Scene:
         cos_i = -np.dot(normal, ray_direction)
         sin_i2 = 1.0 - cos_i * cos_i
         sin_r2 = (1 / 1.52) ** 2 * sin_i2
+        #Total internal reflection
         if sin_r2 > 1.0:
-            return None  # Total internal reflection
+            return None  
         cos_r = math.sqrt(1.0 - sin_r2)
         return (1 / 1.52) * ray_direction + (1 / 1.52 * cos_i - cos_r) * normal
       
@@ -120,7 +121,7 @@ class Scene:
             couleur_reflechie = self.tracer_rayon(premier_reflect, direction_reflechie, profondeur)
 
 
-        # Réfraction
+        #Réfraction
         if objet_proche.transparence > 0:
             rayon_refraction = self.refraction(direction, normale)
             if rayon_refraction is not None:
@@ -134,9 +135,11 @@ class Scene:
         k_trans = objet_proche.transparence
         k_direct = 1 - k_refl - k_trans
         couleur_totale = k_direct * couleur_directe + k_refl * couleur_reflechie + k_trans * couleur_refraction
+        """
         if(couleur_totale[0]>255):
             #print(couleur_totale)
             couleur_totale/=2
+        """
         return np.clip(couleur_totale, 0, 255)
 
     def trouver_intersection_la_plus_proche(self, origine, direction):
@@ -250,8 +253,8 @@ class Scene:
 
         sphere1 = Sphere(1, [0, 1, 0], [255, 255, 255], 0,earth,0)
         #sphere2 = Sphere(0.5, [0, 1, 2], [0, 255, 0], 0, None, 1.5)
-        #sphere3 = Sphere(1, [2, 1, 0], [255, 255, 255], 1.0, None,0)
-        #sphere4 = Sphere(1, [-2, 1, 0], [255, 255, 255], 0, None, 0)
+        sphere3 = Sphere(1, [2, 1, 0], [255, 255, 255], 1.0, None,0)
+        sphere4 = Sphere(1, [-2, 1, 0], [255, 255, 255], 0, None, 0)
         plan_horizontal = Plan([0, 0, 0], [0, 1, 0], [255, 255, 255],0.2, sol,0)
         #plan_vertical = Plan([0, 0, -10], [0, 0, 1], [0, 0, 0], 0, None,0)
         #plan_vertical1 = Plan([0, 0, 10], [0, 0, 1], [255, 255, 255], 0, None)
@@ -259,14 +262,14 @@ class Scene:
         #Ajout 
         scene.ajouter_objet(sphere1)
         #scene.ajouter_objet(sphere2)
-        #scene.ajouter_objet(sphere3)
-        #scene.ajouter_objet(sphere4)
+        scene.ajouter_objet(sphere3)
+        scene.ajouter_objet(sphere4)
         scene.ajouter_objet(plan_horizontal)
         #scene.ajouter_objet(plan_vertical)
         #scene.ajouter_objet(plan_vertical1)
 
         #configuration de la caméra
-        camera = Camera(np.array([0, 3, 7]), np.array([0, 0, -1]), [0, 1, 0], [largeur, hauteur], largeur/2)
+        camera = Camera(np.array([0, 1, 5]), np.array([0, 0, -1]), [0, 1, 0], [largeur, hauteur], largeur/2)
         scene.configurer_camera(camera)
 
         #configuration de la lumière

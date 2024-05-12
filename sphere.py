@@ -110,17 +110,16 @@ class Sphere:
     
     def get_uv(self, p):
       """
-      p: un point donné sur la sphère de rayon un, centrée à l'origine.
-      u: valeur retournée [0,1] de l'angle autour de l'axe Y à partir de X=-1.
-      v: valeur retournée [0,1] de l'angle de Y=-1 à Y=+1.
-          <1 0 0> donne <0.50 0.50>       <-1  0  0> donne <0.00 0.50>
-          <0 1 0> donne <0.50 1.00>       < 0 -1  0> donne <0.50 0.00>
-          <0 0 1> donne <0.25 0.50>       < 0  0 -1> donne <0.75 0.50>
+      Retourne la position du point p sur la texture
+      Pour plus d'explication voir dans:
+        image_texture.py dans le init l'explication de ce qu'il se passe ici
       """
-      y = max(-1.0, min(1.0, -p[1]))  # Clamp la valeur de -p[1] dans l'intervalle [-1, 1]
+
+      y = max(-1.0, min(1.0, -p[1]))  #valeurs entre [0, 1]
       theta = math.acos(y)
       phi = math.atan2(-p[2], p[0]) + math.pi
 
+      #normalisation de u et v pour les avoir dans l'intervale [0, 1]
       u = phi / (2 * math.pi)
       v = theta / math.pi
 
