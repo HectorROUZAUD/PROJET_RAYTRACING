@@ -29,10 +29,16 @@ class Scene:
         self.lumiere = lumiere
 
     def calculer_rayon(self, x, y):
-    #calcul du rayon sortant de la caméra
-        pixel = np.array([x - self.largeur / 2 + self.camera.position[0], 
-                          self.hauteur / 2 - y + self.camera.position[1], 
-                          self.camera.position[2] - self.camera.distance_focale])
+        """
+        calcul du rayon sortant de la caméra
+        """
+        x = x - self.largeur / 2 + self.camera.position[0]
+        y = self.hauteur / 2 - y + self.camera.position[1]
+        z = self.camera.position[2] - self.camera.distance_focale
+        
+        pixel = np.array([x, y, z])
+        
+
         rayon = self.camera.rayon_vue(pixel)
         rayon /= np.linalg.norm(rayon)
         return rayon
@@ -49,15 +55,15 @@ class Scene:
         cos_i = -np.dot(normal, ray_direction)
         sin_i2 = 1.0 - cos_i * cos_i
         sin_r2 = (1 / 1.52) ** 2 * sin_i2
+
+
         #Total internal reflection
         if sin_r2 > 1.0:
             return None  
+        
         cos_r = math.sqrt(1.0 - sin_r2)
         return (1 / 1.52) * ray_direction + (1 / 1.52 * cos_i - cos_r) * normal
       
-
-        
-
 
     def apply_gamma_correction(self, image, gamma=2.2):
         """
